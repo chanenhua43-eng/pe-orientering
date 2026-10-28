@@ -16,8 +16,8 @@
             --step-num-bg: #0d8a4d;
             --bg-color: #f0f4f8;
             --dark-text: #212529;
-            --light-gray: #e9ecef;
             --danger: #d90429;
+            --heart: #e63946;
         }
 
         * {
@@ -47,23 +47,16 @@
             z-index: 100;
         }
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .header-title h1 {
             margin: 0;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 800;
             line-height: 1.2;
         }
 
         .header-title span {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             opacity: 0.9;
-            font-weight: normal;
         }
 
         .header-status {
@@ -89,12 +82,12 @@
         }
 
         .main-container {
-            max-width: 800px;
+            max-width: 750px;
             margin: 20px auto;
             padding: 0 15px;
         }
 
-        /* 設定與登錄卡片 */
+        /* 登錄卡片 */
         .setup-card {
             background: #ffffff;
             padding: 25px;
@@ -141,13 +134,13 @@
             margin-bottom: 10px;
         }
 
-        /* 地圖主區塊版型 (深色背景框) */
+        /* 地圖主區塊版型 (深色卡片) */
         .map-card {
             background-color: var(--map-card-bg);
             border-radius: 20px;
             padding: 20px;
             color: white;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
 
@@ -164,7 +157,7 @@
             padding: 6px 14px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -218,16 +211,6 @@
             flex-shrink: 0;
         }
 
-        .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            background: #f8fafc;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
         .preview-img {
             max-width: 100%;
             max-height: 250px;
@@ -252,13 +235,11 @@
 <!-- 頂部 Header -->
 <header class="app-header">
     <div class="header-title">
-        <div>
-            <h1>嘉大蘭潭校區 定向越野</h1>
-            <span>體適能順點解謎與挑戰系統</span>
-        </div>
+        <h1>嘉大蘭潭校區 定向越野</h1>
+        <span>體適能順點解謎與挑戰系統</span>
     </div>
     <div class="header-status">
-        <div id="routeBadge" class="route-badge">未選擇地圖</div>
+        <div id="routeBadge" class="route-badge">未選擇路線</div>
         <div id="timerDisplay" class="timer-display">00:00:00</div>
     </div>
 </header>
@@ -284,7 +265,7 @@
         <button class="btn" onclick="startChallenge()">🚀 開始定向越野挑戰</button>
     </div>
 
-    <!-- 探索主區域 -->
+    <!-- 探索主區域 (只包含【目前關卡】，完全無下方預覽) -->
     <div id="challengeSection" class="hidden">
         
         <!-- 地圖與目前 CP 關卡卡片 (深色版型) -->
@@ -296,7 +277,6 @@
                 </div>
             </div>
             <div class="map-img-box">
-                <!-- 地圖將動態替換 -->
                 <img id="mapImage" src="" alt="嘉大蘭潭校區定向越野地圖">
             </div>
         </div>
@@ -313,7 +293,7 @@
             <button class="btn" onclick="submitStep1()" style="margin-top:15px;">📸 確認上傳現場照片</button>
         </div>
 
-        <!-- 步驟二：回答地點問題 (初始完全隱藏) -->
+        <!-- 步驟二：回答地點問題 (隱藏，完成步驟一才解鎖) -->
         <div id="step2Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">2</div>
@@ -325,25 +305,25 @@
             <div id="step2Feedback" class="feedback-msg hidden"></div>
         </div>
 
-        <!-- 步驟三：體力任務與拍照/心跳率 (初始完全隱藏) -->
+        <!-- 步驟三：體力任務與拍照/心跳率 (隱藏，完成步驟二才解鎖) -->
         <div id="step3Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">3</div>
-                <div>步驟三：執行體育體能挑戰任務</div>
+                <div>步驟三：執行體力挑戰任務</div>
             </div>
             <p id="taskText" style="font-size:1.15rem; font-weight:bold; color:#0d8a4d;"></p>
             
-            <!-- 若為照片任務 -->
+            <!-- 拍照任務專用區域 -->
             <div id="taskPhotoArea" class="hidden" style="background:#f0fdf4; padding:15px; border-radius:10px; margin:12px 0; border:1px solid #bbf7d0;">
                 <label style="color:#b91c1c;">📷 任務要求：請拍攝並上傳任務相片</label>
                 <input type="file" id="photoInputTask" accept="image/*" onchange="previewImg('photoInputTask', 'previewTask')">
                 <img id="previewTask" class="preview-img hidden">
             </div>
 
-            <!-- 若為運動任務 -->
-            <div id="taskExerciseArea" class="hidden" style="background:#fff1f2; padding:15px; border-radius:10px; margin:12px 0; border:1px solid #fecdd3;">
-                <label style="color:#be123c;">💓 運動量測：請填寫執行完畢後的即時心跳率 (BPM)</label>
-                <input type="number" id="heartRateInput" placeholder="例如：135" min="40" max="220">
+            <!-- 運動任務專用區域（心跳率填寫） -->
+            <div id="taskExerciseArea" class="hidden" style="background:#fff1f2; padding:15px; border-radius:10px; margin:12px 0; border:2px solid #fecdd3;">
+                <label style="color:var(--heart); font-size:1.05rem;">💓 運動量測：請填寫執行完畢後的即時心跳率 (BPM)</label>
+                <input type="number" id="heartRateInput" placeholder="例如：135" min="40" max="220" style="font-size:1.1rem; font-weight:bold;">
             </div>
 
             <label style="margin-top:10px;"><input type="checkbox" id="taskCheck"> 我們已確認完成此項任務！</label>
@@ -365,7 +345,7 @@
 <script>
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzdPCNNIgX0wdTFEEirbAaDbEHAiRJHaKJP_lm4ir7HuywFs-BX1CVL6xnobeiDzLA/exec';
 
-    // A/B/C/D 4版地圖路線 (對應簡報: KANO答案更正為 KANO)
+    // 11 個 CP 點 (KANO答案更正為 KANO ; isExercise 運動標記必填心跳率)
     const routesData = {
         'A': [
             { id: 1, location: "操場單槓", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
@@ -391,7 +371,7 @@
             { id: 8, location: "活動中心郵局", question: "郵遞區號/郵局代碼", answer: "600355", task: "郵局開合跳 30 下", requirePhoto: false, isExercise: true },
             { id: 9, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
             { id: 10, location: "嘉禾館前", question: "照片上有多少人", answer: "34", task: "雙人背對背蹲或相背靠牆蹲 30 秒", requirePhoto: false, isExercise: true },
-            { id: 11, location: "树下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
+            { id: 11, location: "樹下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
         ],
         'C': [
             { id: 1, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
@@ -474,13 +454,13 @@
         document.getElementById('step2Card').classList.add('hidden');
         document.getElementById('step3Card').classList.add('hidden');
 
-        // 重置欄位與圖片
+        // 重置打卡與答題
         document.getElementById('photoInputStep1').value = '';
         document.getElementById('previewStep1').classList.add('hidden');
         document.getElementById('answerInput').value = '';
         document.getElementById('step2Feedback').classList.add('hidden');
 
-        // 照片/運動任務區域重置
+        // 重置步驟三欄位
         document.getElementById('taskPhotoArea').classList.add('hidden');
         document.getElementById('taskExerciseArea').classList.add('hidden');
         document.getElementById('photoInputTask').value = '';
@@ -507,7 +487,7 @@
     function submitStep1() {
         const fileInput = document.getElementById('photoInputStep1');
         if (!fileInput.files || !fileInput.files[0]) {
-            alert('請拍攝並上傳打卡照片！');
+            alert('請先選擇或拍攝現場打卡照片！');
             return;
         }
 
@@ -517,7 +497,7 @@
         // 解鎖步驟二
         document.getElementById('questionText').innerText = cp.question;
         document.getElementById('step2Card').classList.remove('hidden');
-        alert('打卡成功！解鎖步驟二問題。');
+        alert('現場打卡成功！已解鎖步驟二問題。');
     }
 
     function submitStep2() {
@@ -538,8 +518,14 @@
 
             // 解鎖步驟三
             document.getElementById('taskText').innerText = cp.task;
-            if (cp.requirePhoto) document.getElementById('taskPhotoArea').classList.remove('hidden');
-            if (cp.isExercise) document.getElementById('taskExerciseArea').classList.remove('hidden');
+
+            // 判斷該 CP 點是否為拍照任務或運動任務
+            if (cp.requirePhoto) {
+                document.getElementById('taskPhotoArea').classList.remove('hidden');
+            }
+            if (cp.isExercise) {
+                document.getElementById('taskExerciseArea').classList.remove('hidden');
+            }
 
             document.getElementById('step3Card').classList.remove('hidden');
         } else {
@@ -553,25 +539,27 @@
     function submitStep3() {
         const cp = currentList[currentIndex];
 
+        // 檢查拍照任務是否已有照片
         if (cp.requirePhoto) {
             const taskInput = document.getElementById('photoInputTask');
             if (!taskInput.files || !taskInput.files[0]) {
-                alert('本關卡為照片任務，請拍攝並上傳合照相片！');
+                alert('本關卡為拍照任務，請拍攝並上傳任務相片！');
                 return;
             }
         }
 
+        // 檢查運動任務是否已填寫心跳率
         let hrValue = '';
         if (cp.isExercise) {
             hrValue = document.getElementById('heartRateInput').value.trim();
             if (!hrValue) {
-                alert('本關卡為運動任務，請填寫運動後的即時心跳率 (BPM)！');
+                alert('本關卡為運動執行任務，請填寫運動後的即時心跳率 (BPM)！');
                 return;
             }
         }
 
         if (!document.getElementById('taskCheck').checked) {
-            alert('請勾選確認完成任務！');
+            alert('請勾選確認已完成任務！');
             return;
         }
 
