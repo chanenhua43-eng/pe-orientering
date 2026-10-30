@@ -293,10 +293,10 @@
         <button class="btn" onclick="startChallenge()">🚀 開始定向越野挑戰</button>
     </div>
 
-    <!-- 探索主區域 (只包含【目前 CP 點】，無下方預覽) -->
+    <!-- 探索主區域 -->
     <div id="challengeSection" class="hidden">
         
-        <!-- 地圖與目前 CP 關卡卡片 (深色版型) -->
+        <!-- 地圖與目前 CP 關卡卡片 -->
         <div class="map-card">
             <div class="map-card-header">
                 <div class="cp-title-badge">
@@ -322,7 +322,7 @@
             <button class="btn" onclick="submitStep1()" style="margin-top:15px;">📸 確認上傳現場照片</button>
         </div>
 
-        <!-- 步驟二：回答地點問題 (完成步驟一後解鎖) -->
+        <!-- 步驟二：回答地點問題 -->
         <div id="step2Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">2</div>
@@ -334,7 +334,7 @@
             <div id="step2Feedback" class="feedback-msg hidden"></div>
         </div>
 
-        <!-- 步驟三：體力任務與拍照/心跳率 (完成步驟二後解鎖) -->
+        <!-- 步驟三：體力任務與拍照/心跳率 -->
         <div id="step3Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">3</div>
@@ -377,7 +377,8 @@
 </div>
 
 <script>
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzdPCNNIgX0wdTFEEirbAaDbEHAiRJHaKJP_lm4ir7HuywFs-BX1CVL6xnobeiDzLA/exec';
+    // 您指定的 Google Apps Script 後端 URL
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxfN_rBq2T4vhODRnSQLnY7DhiJAqFodVc2T0FCPkxM-U2CS3pNgnU9GR2ZH8Dcp6g/exec';
 
     // 精準對應與 index.html 同資料夾下的地圖圖檔檔名 (保留中間空格)
     const mapImages = {
@@ -387,7 +388,7 @@
         'D': 'map D.png'
     };
 
-    // 11 個 CP 點資料設定 (棒球雕像標準答案為 KANO)
+    // 11 個 CP 點資料設定 (已採用您最新微調後的關卡說明)
     const routesData = {
         'A': [
             { id: 1, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
