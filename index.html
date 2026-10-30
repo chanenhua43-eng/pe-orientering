@@ -345,33 +345,51 @@
 <script>
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzdPCNNIgX0wdTFEEirbAaDbEHAiRJHaKJP_lm4ir7HuywFs-BX1CVL6xnobeiDzLA/exec';
 
-    // 11 個 CP 點 (KANO答案更正為 KANO ; isExercise 運動標記必填心跳率)
+    // 備用動態繪製地圖 (當影像載入延遲時即時繪製 SVG)
+    function generateMapSvg(type) {
+        const routes = {
+            'A': '1-操場 → 2-棒球雕像 → 3-排球場 → 4-雕像 → 5-嘉禾館前 → 6-籃球場 → 7-中正樓 → 8-操場司令台 → 9-蘭庭廣場 → 10-活動中心 → 11-操場',
+            'B': '1-排球場 → 2-雕像 → 3-籃球場 → 4-操場 → 5-棒球雕像 → 6-中正樓 → 7-蘭庭廣場 → 8-活動中心 → 9-操場司令台 → 10-嘉禾館前 → 11-操場',
+            'C': '1-操場司令台 → 2-棒球雕像 → 3-中正樓 → 4-籃球場 → 5-排球場 → 6-操場 → 7-嘉禾館前 → 8-雕像 → 9-活動中心 → 10-蘭庭廣場 → 11-操場',
+            'D': '1-籃球場 → 2-操場 → 3-排球場 → 4-嘉禾館前 → 5-雕像 → 6-棒球雕像 → 7-操場司令台 → 8-活動中心 → 9-蘭庭廣場 → 10-中正樓 → 11-操場'
+        }
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" style="background:#b5e2fa;">
+            <rect width="800" height="450" fill="#a2d2ff"/>
+            <path d="M 50,220 Q 200,80 450,110 T 750,200 Q 780,320 600,380 T 150,380 Z" fill="#c7f9cc" stroke="#52b788" stroke-width="6"/>
+            <text x="40" y="60" font-size="32" font-weight="bold" fill="#1d3557">${type} 版地圖路線</text>
+            <rect x="30" y="380" width="740" height="50" rx="10" fill="#ffffff" opacity="0.9"/>
+            <text x="40" y="412" font-size="14" font-weight="bold" fill="#2b2d42">路線指引：${routes[type]}</text>
+        </svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    // 11 個 CP 點資料設定
     const routesData = {
         'A': [
-            { id: 1, location: "操場單槓", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
+            { id: 1, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
             { id: 2, location: "棒球雕像", question: "嘉農棒球隊的英文縮寫", answer: "KANO", task: "請模仿棒球投擲姿勢和雕像合照", requirePhoto: true, isExercise: false },
             { id: 3, location: "排球場", question: "排球的英文名稱", answer: "Volley ball", task: "一起深蹲 30 下練大腿", requirePhoto: false, isExercise: true },
-            { id: 4, location: "嘉寶雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
+            { id: 4, location: "雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
             { id: 5, location: "嘉禾館前", question: "照片上有多少人", answer: "34", task: "雙人背對背蹲或相背靠牆蹲 30 秒", requirePhoto: false, isExercise: true },
             { id: 6, location: "籃球場", question: "籃球場面積", answer: "420", task: "原地快速高抬腿 30 下", requirePhoto: false, isExercise: true },
             { id: 7, location: "中正樓", question: "建築物名稱", answer: "中正樓", task: "階梯跑每人接力一趟", requirePhoto: false, isExercise: true },
             { id: 8, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
             { id: 9, location: "蘭庭廣場", question: "選擇嘉大 夢想加大", answer: "NCYU", task: "請用身體擺出 NCYU 拍照上傳", requirePhoto: true, isExercise: false },
-            { id: 10, location: "活動中心郵局", question: "郵遞區號/郵局代碼", answer: "600355", task: "郵局開合跳 30 下", requirePhoto: false, isExercise: true },
-            { id: 11, location: "樹下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
+            { id: 10, location: "活動中心", question: "600355（地點）", answer: "郵局", task: "開合跳 30 下", requirePhoto: false, isExercise: true },
+            { id: 11, location: "操場", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
         ],
         'B': [
             { id: 1, location: "排球場", question: "排球英文名稱", answer: "Volley ball", task: "深蹲 30 下", requirePhoto: false, isExercise: true },
-            { id: 2, location: "嘉寶雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
+            { id: 2, location: "雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
             { id: 3, location: "籃球場", question: "籃球場面積", answer: "420", task: "原地快速高抬腿 30 下", requirePhoto: false, isExercise: true },
-            { id: 4, location: "操場單槓", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
+            { id: 4, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
             { id: 5, location: "棒球雕像", question: "嘉農棒球隊的英文縮寫", answer: "KANO", task: "請模仿棒球投擲姿勢和雕像合照", requirePhoto: true, isExercise: false },
             { id: 6, location: "中正樓", question: "建築物名稱", answer: "中正樓", task: "階梯跑每人接力一趟", requirePhoto: false, isExercise: true },
             { id: 7, location: "蘭庭廣場", question: "選擇嘉大 夢想加大", answer: "NCYU", task: "請用身體擺出 NCYU 拍照上傳", requirePhoto: true, isExercise: false },
-            { id: 8, location: "活動中心郵局", question: "郵遞區號/郵局代碼", answer: "600355", task: "郵局開合跳 30 下", requirePhoto: false, isExercise: true },
+            { id: 8, location: "活動中心", question: "600355（地點）", answer: "郵局", task: "開合跳 30 下", requirePhoto: false, isExercise: true },
             { id: 9, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
             { id: 10, location: "嘉禾館前", question: "照片上有多少人", answer: "34", task: "雙人背對背蹲或相背靠牆蹲 30 秒", requirePhoto: false, isExercise: true },
-            { id: 11, location: "樹下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
+            { id: 11, location: "操場", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
         ],
         'C': [
             { id: 1, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
@@ -379,25 +397,25 @@
             { id: 3, location: "中正樓", question: "建築物名稱", answer: "中正樓", task: "階梯跑每人接力一趟", requirePhoto: false, isExercise: true },
             { id: 4, location: "籃球場", question: "籃球場面積", answer: "420", task: "原地快速高抬腿 30 下", requirePhoto: false, isExercise: true },
             { id: 5, location: "排球場", question: "排球英文名稱", answer: "Volley ball", task: "深蹲 30 下", requirePhoto: false, isExercise: true },
-            { id: 6, location: "操場單槓", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
+            { id: 6, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
             { id: 7, location: "嘉禾館前", question: "照片上有多少人", answer: "34", task: "雙人背對背蹲或相背靠牆蹲 30 秒", requirePhoto: false, isExercise: true },
-            { id: 8, location: "嘉寶雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
-            { id: 9, location: "活動中心郵局", question: "郵遞區號/郵局代碼", answer: "600355", task: "郵局開合跳 30 下", requirePhoto: false, isExercise: true },
+            { id: 8, location: "雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
+            { id: 9, location: "活動中心", question: "600355（地點）", answer: "郵局", task: "開合跳 30 下", requirePhoto: false, isExercise: true },
             { id: 10, location: "蘭庭廣場", question: "選擇嘉大 夢想加大", answer: "NCYU", task: "請用身體擺出 NCYU 拍照上傳", requirePhoto: true, isExercise: false },
-            { id: 11, location: "樹下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
+            { id: 11, location: "操場", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
         ],
         'D': [
             { id: 1, location: "籃球場", question: "籃球場面積", answer: "420", task: "原地快速高抬腿 30 下", requirePhoto: false, isExercise: true },
-            { id: 2, location: "操場單槓", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
+            { id: 2, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
             { id: 3, location: "排球場", question: "排球英文名稱", answer: "Volley ball", task: "一起深蹲 30 下練大腿", requirePhoto: false, isExercise: true },
             { id: 4, location: "嘉禾館前", question: "照片上有多少人", answer: "34", task: "雙人背對背蹲或相背靠牆蹲 30 秒", requirePhoto: false, isExercise: true },
-            { id: 5, location: "嘉寶雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
+            { id: 5, location: "雕像", question: "嘉義大學吉祥物名稱", answer: "嘉寶", task: "與嘉寶合照（跳躍照）", requirePhoto: true, isExercise: false },
             { id: 6, location: "棒球雕像", question: "嘉農棒球隊的英文縮寫", answer: "KANO", task: "請模仿棒球投擲姿勢和雕像合照", requirePhoto: true, isExercise: false },
             { id: 7, location: "操場司令台", question: "今年是第幾週年的全校性綜合運動會", answer: "107", task: "折返敏捷跑 3 趟", requirePhoto: false, isExercise: true },
-            { id: 8, location: "活動中心郵局", question: "郵遞區號/郵局代碼", answer: "600355", task: "郵局開合跳 30 下", requirePhoto: false, isExercise: true },
+            { id: 8, location: "活動中心", question: "600355（地點）", answer: "郵局", task: "開合跳 30 下", requirePhoto: false, isExercise: true },
             { id: 9, location: "蘭庭廣場", question: "選擇嘉大 夢想加大", answer: "NCYU", task: "請用身體擺出 NCYU 拍照上傳", requirePhoto: true, isExercise: false },
             { id: 10, location: "中正樓", question: "建築物名稱", answer: "中正樓", task: "階梯跑每人接力一趟", requirePhoto: false, isExercise: true },
-            { id: 11, location: "樹下", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
+            { id: 11, location: "操場", question: "13, 10, 12", answer: "詹恩華", task: "全員與答案合照", requirePhoto: true, isExercise: false }
         ]
     };
 
@@ -449,6 +467,10 @@
         const cp = currentList[idx];
         document.getElementById('cpBadgeText').innerText = `CP ${idx + 1}`;
         document.getElementById('cpLocationText').innerText = cp.location;
+
+        // 設置路線地圖
+        const mapImgEl = document.getElementById('mapImage');
+        mapImgEl.src = generateMapSvg(currentRouteKey);
 
         // 隱藏步驟二與步驟三，只開啟步驟一
         document.getElementById('step2Card').classList.add('hidden');
