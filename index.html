@@ -33,7 +33,6 @@
             padding-bottom: 50px;
         }
 
-        /* 頂部 Header 版型 */
         .app-header {
             background-color: var(--header-bg);
             color: var(--header-text);
@@ -87,7 +86,6 @@
             padding: 0 15px;
         }
 
-        /* 登錄卡片 */
         .setup-card {
             background: #ffffff;
             padding: 25px;
@@ -125,9 +123,7 @@
             transition: all 0.2s;
         }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+        .btn:hover { opacity: 0.9; }
 
         .btn-random {
             background-color: #0284c7;
@@ -144,7 +140,6 @@
             cursor: pointer;
         }
 
-        /* 地圖主區塊版型 (深色卡片) */
         .map-card {
             background-color: var(--map-card-bg);
             border-radius: 20px;
@@ -188,7 +183,6 @@
             cursor: pointer;
         }
 
-        /* 步驟區塊版型 */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -238,7 +232,20 @@
         .feedback-msg.error { background: #ffeedd; color: var(--danger); }
         .feedback-msg.success { background: #e8f5e9; color: var(--primary-green); }
 
-        /* 圖片放大燈箱 Modal */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -260,7 +267,10 @@
 </head>
 <body>
 
-<!-- 頂部 Header -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+    <div>⏳ 照片上傳與資料傳送中，請稍候...</div>
+</div>
+
 <header class="app-header">
     <div class="header-title">
         <h1>嘉大蘭潭校區 定向越野</h1>
@@ -274,7 +284,6 @@
 
 <div class="main-container">
 
-    <!-- 步驟 0: 登錄區 -->
     <div id="setupSection" class="setup-card">
         <h2>登錄挑戰者資訊</h2>
         <label for="studentId">請輸入姓名或組別：</label>
@@ -293,10 +302,7 @@
         <button class="btn" onclick="startChallenge()">🚀 開始定向越野挑戰</button>
     </div>
 
-    <!-- 探索主區域 -->
     <div id="challengeSection" class="hidden">
-        
-        <!-- 地圖與目前 CP 關卡卡片 -->
         <div class="map-card">
             <div class="map-card-header">
                 <div class="cp-title-badge">
@@ -310,7 +316,6 @@
             </div>
         </div>
 
-        <!-- 步驟一：打卡拍照驗證 -->
         <div id="step1Card" class="step-card">
             <div class="step-title">
                 <div class="step-number">1</div>
@@ -319,10 +324,9 @@
             <p style="color:#64748b; margin-bottom:12px;">請到達地圖標示點位後，拍下該建築或雕像的照片上傳：</p>
             <input type="file" id="photoInputStep1" accept="image/*" onchange="previewImg('photoInputStep1', 'previewStep1')">
             <img id="previewStep1" class="preview-img hidden">
-            <button class="btn" onclick="submitStep1()" style="margin-top:15px;">📸 確認上傳現場照片</button>
+            <button class="btn" onclick="submitStep1()" style="margin-top:15px;">📸 確認上傳現場照片至雲端</button>
         </div>
 
-        <!-- 步驟二：回答地點問題 -->
         <div id="step2Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">2</div>
@@ -334,7 +338,6 @@
             <div id="step2Feedback" class="feedback-msg hidden"></div>
         </div>
 
-        <!-- 步驟三：體力任務與拍照/心跳率 -->
         <div id="step3Card" class="step-card hidden">
             <div class="step-title">
                 <div class="step-number">3</div>
@@ -342,14 +345,12 @@
             </div>
             <p id="taskText" style="font-size:1.15rem; font-weight:bold; color:#0d8a4d;"></p>
             
-            <!-- 拍照任務專用區域 -->
             <div id="taskPhotoArea" class="hidden" style="background:#f0fdf4; padding:15px; border-radius:10px; margin:12px 0; border:1px solid #bbf7d0;">
                 <label style="color:#b91c1c;">📷 任務要求：請拍攝並上傳任務相片</label>
                 <input type="file" id="photoInputTask" accept="image/*" onchange="previewImg('photoInputTask', 'previewTask')">
                 <img id="previewTask" class="preview-img hidden">
             </div>
 
-            <!-- 運動任務專用區域（心跳率填寫） -->
             <div id="taskExerciseArea" class="hidden" style="background:#fff1f2; padding:15px; border-radius:10px; margin:12px 0; border:2px solid #fecdd3;">
                 <label style="color:var(--heart); font-size:1.05rem;">💓 運動量測：請填寫執行完畢後的即時心跳率 (BPM)</label>
                 <input type="number" id="heartRateInput" placeholder="例如：135" min="40" max="220" style="font-size:1.1rem; font-weight:bold;">
@@ -358,29 +359,24 @@
             <label style="margin-top:10px;"><input type="checkbox" id="taskCheck"> 我們已確認完成此項任務！</label>
             <button class="btn" onclick="submitStep3()" style="margin-top:15px;">✅ 完成此關卡，前往下一個 CP 點</button>
         </div>
-
     </div>
 
-    <!-- 全程完成畫面 -->
     <div id="completedSection" class="setup-card hidden" style="text-align: center;">
         <h2 style="color:var(--primary-green); font-size:1.8rem;">🎉 恭喜完成全數 11 個 CP 點挑戰！</h2>
-        <p>您的挑戰成績與歷程資料已成功發送至 Google Sheet 資料庫。</p>
+        <p>您的挑戰成績、答題紀錄與現場相片已全數寫入 Google Sheet 與 Google Drive 雲端硬碟。</p>
         <p style="font-weight:bold; font-size:1.2rem;" id="finalTimeDisplay"></p>
         <button class="btn" onclick="location.reload()">重新開始 / 換人操作</button>
     </div>
 
 </div>
 
-<!-- 大圖燈箱 Modal -->
 <div id="mapModal" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
     <img id="modalImg" src="" alt="地圖大圖">
 </div>
 
 <script>
-    // 您指定的 Google Apps Script 後端 URL
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxfN_rBq2T4vhODRnSQLnY7DhiJAqFodVc2T0FCPkxM-U2CS3pNgnU9GR2ZH8Dcp6g/exec';
 
-    // 精準對應與 index.html 同資料夾下的地圖圖檔檔名 (保留中間空格)
     const mapImages = {
         'A': 'map A.png',
         'B': 'map B.png',
@@ -388,7 +384,6 @@
         'D': 'map D.png'
     };
 
-    // 11 個 CP 點資料設定 (已採用您最新微調後的關卡說明)
     const routesData = {
         'A': [
             { id: 1, location: "操場", question: "訓練肌肉適能工具", answer: "單槓", task: "單槓接力 30 下", requirePhoto: false, isExercise: true },
@@ -483,7 +478,7 @@
         document.getElementById('routeBadge').innerText = `${currentRouteKey} 版地圖`;
 
         startTimer();
-        sendToSheet('開始探索', `選擇了 ${currentRouteKey} 版路線`);
+        sendToSheetAndDrive('開始探索', `選擇了 ${currentRouteKey} 版路線`);
 
         loadCP(currentIndex);
     }
@@ -493,23 +488,19 @@
         document.getElementById('cpBadgeText').innerText = `CP ${idx + 1}`;
         document.getElementById('cpLocationText').innerText = cp.location;
 
-        // 載入當前路線的專屬圖片檔 (如 map A.png)
         const mapImgEl = document.getElementById('mapImage');
         const imgSrc = mapImages[currentRouteKey] || '';
         mapImgEl.src = imgSrc;
         document.getElementById('modalImg').src = imgSrc;
 
-        // 隱藏步驟二與步驟三，只開啟步驟一
         document.getElementById('step2Card').classList.add('hidden');
         document.getElementById('step3Card').classList.add('hidden');
 
-        // 重置欄位與圖片
         document.getElementById('photoInputStep1').value = '';
         document.getElementById('previewStep1').classList.add('hidden');
         document.getElementById('answerInput').value = '';
         document.getElementById('step2Feedback').classList.add('hidden');
 
-        // 重置步驟三欄位
         document.getElementById('taskPhotoArea').classList.add('hidden');
         document.getElementById('taskExerciseArea').classList.add('hidden');
         document.getElementById('photoInputTask').value = '';
@@ -545,12 +536,14 @@
         }
 
         const cp = currentList[currentIndex];
-        sendToSheet(`打卡拍照 (CP ${currentIndex + 1})`, `地點: ${cp.location}`);
+        const file = fileInput.files[0];
+        const fileName = `${studentId}_CP${currentIndex+1}_現場打卡_${file.name}`;
 
-        // 解鎖步驟二
-        document.getElementById('questionText').innerText = cp.question;
-        document.getElementById('step2Card').classList.remove('hidden');
-        alert('現場打卡成功！已解鎖步驟二問題。');
+        sendToSheetAndDrive(`打卡拍照 (CP ${currentIndex + 1})`, `地點: ${cp.location}`, file, fileName, () => {
+            document.getElementById('questionText').innerText = cp.question;
+            document.getElementById('step2Card').classList.remove('hidden');
+            alert('現場打卡照片已成功上傳至雲端！已解鎖步驟二問題。');
+        });
     }
 
     function submitStep2() {
@@ -567,12 +560,10 @@
             feedback.innerText = '🎉 答對了！已解鎖步驟三體態挑戰任務。';
             feedback.classList.remove('hidden');
 
-            sendToSheet(`回答問題 (CP ${currentIndex + 1})`, `地點: ${cp.location} | 正確答案: ${userAns}`);
+            sendToSheetAndDrive(`回答問題 (CP ${currentIndex + 1})`, `地點: ${cp.location} | 正確答案: ${userAns}`);
 
-            // 解鎖步驟三
             document.getElementById('taskText').innerText = cp.task;
 
-            // 判斷該 CP 點是否為拍照任務或運動任務
             if (cp.requirePhoto) {
                 document.getElementById('taskPhotoArea').classList.remove('hidden');
             }
@@ -585,23 +576,25 @@
             feedback.className = 'feedback-msg error';
             feedback.innerText = '❌ 答案不正確，請再試一次！';
             feedback.classList.remove('hidden');
-            sendToSheet(`回答問題 (CP ${currentIndex + 1})`, `地點: ${cp.location} | 錯誤答案: ${userAns}`);
+            sendToSheetAndDrive(`回答問題 (CP ${currentIndex + 1})`, `地點: ${cp.location} | 錯誤答案: ${userAns}`);
         }
     }
 
     function submitStep3() {
         const cp = currentList[currentIndex];
+        let taskFile = null;
+        let taskFileName = "";
 
-        // 檢查拍照任務是否已有照片
         if (cp.requirePhoto) {
             const taskInput = document.getElementById('photoInputTask');
             if (!taskInput.files || !taskInput.files[0]) {
                 alert('本關卡為拍照任務，請拍攝並上傳任務相片！');
                 return;
             }
+            taskFile = taskInput.files[0];
+            taskFileName = `${studentId}_CP${currentIndex+1}_任務合照_${taskFile.name}`;
         }
 
-        // 檢查運動任務是否已填寫心跳率
         let hrValue = '';
         if (cp.isExercise) {
             hrValue = document.getElementById('heartRateInput').value.trim();
@@ -620,23 +613,42 @@
         if (cp.requirePhoto) detailLog += ' (含任務照片)';
         if (cp.isExercise) detailLog += ` | 心跳率: ${hrValue} BPM`;
 
-        sendToSheet(`完成關卡 (CP ${currentIndex + 1})`, detailLog);
+        sendToSheetAndDrive(`完成關卡 (CP ${currentIndex + 1})`, detailLog, taskFile, taskFileName, () => {
+            currentIndex++;
 
-        currentIndex++;
+            if (currentIndex >= currentList.length) {
+                clearInterval(timerInterval);
+                document.getElementById('challengeSection').classList.add('hidden');
+                document.getElementById('completedSection').classList.remove('hidden');
+                document.getElementById('finalTimeDisplay').innerText = `總耗時：${document.getElementById('timerDisplay').innerText}`;
+                sendToSheetAndDrive('全程通關', `完成了全部 11 個 CP 點，總耗時: ${document.getElementById('timerDisplay').innerText}`);
+            } else {
+                alert(`恭喜完成 CP ${currentIndex}！即將載入 CP ${currentIndex + 1}`);
+                loadCP(currentIndex);
+            }
+        });
+    }
 
-        if (currentIndex >= currentList.length) {
-            clearInterval(timerInterval);
-            document.getElementById('challengeSection').classList.add('hidden');
-            document.getElementById('completedSection').classList.remove('hidden');
-            document.getElementById('finalTimeDisplay').innerText = `總耗時：${document.getElementById('timerDisplay').innerText}`;
-            sendToSheet('全程通關', `完成了全部 11 個 CP 點，總耗時: ${document.getElementById('timerDisplay').innerText}`);
+    // 負責將文字數據與照片 (Base64) 上傳至 Google Apps Script
+    function sendToSheetAndDrive(action, detail, file = null, fileName = "", callback = null) {
+        const loading = document.getElementById('loadingOverlay');
+        
+        if (file) {
+            loading.classList.remove('hidden');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoBase64 = e.target.result;
+                postPayload(action, detail, photoBase64, fileName, callback);
+            };
+            reader.readAsDataURL(file);
         } else {
-            alert(`恭喜完成 CP ${currentIndex}！即將載入 CP ${currentIndex + 1}`);
-            loadCP(currentIndex);
+            postPayload(action, detail, "", "", callback);
         }
     }
 
-    function sendToSheet(action, detail) {
+    function postPayload(action, detail, photoBase64, photoFileName, callback) {
+        const loading = document.getElementById('loadingOverlay');
+
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -645,9 +657,19 @@
                 studentId: studentId || '未紀錄',
                 route: currentRouteKey || '未知',
                 action: action,
-                detail: detail
+                detail: detail,
+                photoBase64: photoBase64,
+                photoFileName: photoFileName
             })
-        }).then(() => console.log('紀錄傳送成功')).catch(err => console.error(err));
+        }).then(() => {
+            console.log('紀錄與照片上傳成功');
+            loading.classList.add('hidden');
+            if (callback) callback();
+        }).catch(err => {
+            console.error('上傳失敗:', err);
+            loading.classList.add('hidden');
+            if (callback) callback();
+        });
     }
 </script>
 
